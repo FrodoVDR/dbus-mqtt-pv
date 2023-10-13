@@ -2,6 +2,8 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SERVICE_NAME=$(basename $SCRIPT_DIR)
 
+mv $SCRIPT_DIR/dbus-mqtt*.py $SCRIPT_DIR/$SERVICE_NAME.py
+
 # set permissions for script files
 chmod 744 $SCRIPT_DIR/$SERVICE_NAME.py
 chmod 744 $SCRIPT_DIR/install.sh
@@ -23,6 +25,9 @@ then
         python -m pip install paho-mqtt
     fi
 fi
+
+sed -i "s/dbus-mqtt.*/${SERVICE_NAME}/g" ${SCRIPT_DIR}/service/run
+sed -i "s/dbus-mqtt.*/${SERVICE_NAME}/g" ${SCRIPT_DIR}/service/log/run
 
 # create sym-link to run script in deamon
 ln -s $SCRIPT_DIR/service /service/$SERVICE_NAME
